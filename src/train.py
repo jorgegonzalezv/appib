@@ -14,6 +14,18 @@ import matplotlib.pyplot as plt
 """
     Podriamos incluir:
     - custom transformation que capture info chula de la imagen
+    - rgb -> un solo channel con info interesante (ver papels y tal)
+    - a las malas, captura de features con PCA, DCT o algo y cambiamos a un modelo MLP
+    - optical flow, aplicar al dataset (opencv)
+    - otra es entrenar un modelo de AE y utilizar el latent space como input a un MLP, random forest, ... etc
+    - quitar data-augmentation para no liarla?
+    - split train dataset para validation?
+    - TODO: probar modelo que este aprendiendo con otro dataset!!!!!
+    - AWS: cuando sepa lo anterior meterlo chicha con AWS al entreno
+    - añadir dropout
+    - TODO: sacar features manualemente y entrenar MLP
+    - momentum!
+    - TODO: monitorizar train accuracy!
 """
 
 def train(dataloader, model, loss_fn, optimizer):
@@ -27,6 +39,7 @@ def train(dataloader, model, loss_fn, optimizer):
         #print("target:",y)
         loss = loss_fn(pred, y)
 
+        #print("loss", loss)
         # Backpropagation
         optimizer.zero_grad()
         loss.backward()
@@ -54,7 +67,7 @@ def test(dataloader, model, loss_fn, threshold=0.5):
 
 if __name__ == '__main__':
 
-    epochs = 1
+    epochs = 200
     batch_size = 4
     resize = (256, 256)
 
@@ -70,11 +83,12 @@ if __name__ == '__main__':
     train_ds = ImageFolder(train_path, transform=t_train)
     train_ds_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True)
 
-    #for im, tag in train_ds_loader:
-    #    print(im.shape)
-    #    plt.imshow(im[0].permute(1,2,0))
-    #    plt.show()
-    #    break
+    for im, tag in train_ds_loader:
+        print(im.shape)
+        print(torch.max(im))
+        #plt.imshow(im[0].permute(1,2,0))
+        #plt.show()
+        break
 
     # evaluation (test) dataloader
     t_test = transforms.Compose([
@@ -87,9 +101,11 @@ if __name__ == '__main__':
 
     # model
     model = NeuralNetwork()
-    print(model)
-    pytorch_total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
-    print("Numero de parametros: " ,pytorch_total_params)
+    #print(model)
+    model.load_state_dict(torch.load("weights/model_e20.pth"))
+    
+    #pytorch_total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    #print("Numero de parametros: " ,pytorch_total_params)
     
     # model loss
     # cross-entropy, ya que vamos a predecir probabilidades
@@ -97,13 +113,16 @@ if __name__ == '__main__':
     loss_fn = nn.BCELoss()
 
     # optimizer
-    optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
-
+    optimizer = torch.optim.SGD(model.parameters(), lr=1e-3, momentum=0.9)
+    #optimizer = torch.optim.Adam(model.parameters(),lr=1e-3)
+    
     for e in range(epochs):
         print(f"Epoch {e+1}\n-------------------------------")
         train(train_ds_loader, model, loss_fn, optimizer)
         test(test_ds_dataloader, model, loss_fn)
+        
+        if e%10 == 0:
+            torch.save(model.state_dict(), "weights/model_e"+str(e)+".pth")
+            print("Saved PyTorch Model State to weights")
 
-    torch.save(model.state_dict(), "weights/model.pth")
-    print("Saved PyTorch Model State to weights/model.pth")
-
+    torch.save(model.state_dict(), "weights/model_e"+str(200)+".pth")

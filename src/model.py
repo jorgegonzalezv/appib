@@ -7,7 +7,6 @@ class NeuralNetwork(nn.Module):
 
     def __init__(self):
         super(NeuralNetwork, self).__init__()
-        #self.flatten = nn.Flatten()
         self.convolutional = nn.Sequential(
             nn.Conv2d(3, 6, 6),
             nn.ReLU(),
