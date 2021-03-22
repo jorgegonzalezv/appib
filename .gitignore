@@ -2,3 +2,7 @@ Task_1/
 .ipynb_checkpoints/
 src/__pycache__
 weights/
+.DS_Store
+Task_2_3/
+refactor_task_1/
+backup
