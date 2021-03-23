@@ -45,8 +45,8 @@ black_list = ['fake.007295.jpg','007292.jpg', '007324.jpg', '007759.jpg', '00778
 
 if __name__ == '__main__':
     padding = 0
-    path = "Task_2_3" # nombre carpeta origen
-    refactor_path = "refactor_Task_2_3" # carpeta destino
+    path = "Task_2_3" # nombre carpeta origen , Task_1
+    refactor_path = "refactor_Task_2_3" # carpeta destino, refactor_Task_1
 
     image_loader = ImageFolder(path)
 
