@@ -45,7 +45,7 @@ class NeuralNetworkAdaptative(nn.Module):
             nn.MaxPool2d(3,3),
             nn.Conv2d(6, 16, 6),
             nn.ReLU(),
-            nn.AdaptiveAvgPool2d((26,26))
+            nn.AdaptiveAvgPool2d((26,26)) # cambio!
             )
 
         self.linear = nn.Sequential(

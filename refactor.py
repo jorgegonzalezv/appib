@@ -39,12 +39,14 @@ def parse_file_name(filepath):
     name = w[4]
     return path, name
 
-black_list = ['fake.007295.jpg','007292.jpg', '007324.jpg', '007759.jpg', '007786.jpg', '007792.jpg']
+black_list = ['fake.007295.jpg','007292.jpg', '007324.jpg', '007759.jpg', '007786.jpg', '007792.jpg', # task 1
+            'id10_id7_0001_004.jpg', 'id10_id7_0001_005.jpg', 'id10_id7_0001_006.jpg', # task 2
+             'id10_0001_002.jpg', 'id10_0001_003.jpg', 'id10_0001_004.jpg', 'id10_0001_005.jpg','id10_0001_006.jpg', 'id10_0001_007.jpg', 'id10_0001_008.jpg', 'id10_0001_009.jpg'] # wonderwoman ?
 
 if __name__ == '__main__':
     padding = 0
-    path = "Task_1"
-    refactor_path = "refactor_check_task_1" # name of target directory
+    path = "Task_2_3" # nombre carpeta origen
+    refactor_path = "refactor_Task_2_3" # carpeta destino
 
     image_loader = ImageFolder(path)
 
@@ -61,8 +63,7 @@ if __name__ == '__main__':
                     os.makedirs(refactor_path + "/"+ path)
 
             im_path = refactor_path + "/" + path + "/" + name
-            #print(im_path)
-            #save_image(im, im_path)
+
             face = cv2.cvtColor(face,cv2.COLOR_BGR2RGB) 
 
             cv2.imwrite(im_path, face)

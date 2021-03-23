@@ -1,8 +1,3 @@
-"""
-    Training code based on 
-    https://pytorch.org/tutorials/beginner/basics/quickstart_tutorial.html
-"""
-
 import torch 
 from torch import nn
 from model import NeuralNetwork, NeuralNetworkAdaptative, device
@@ -10,24 +5,7 @@ from torchvision.datasets import ImageFolder
 from torchvision import transforms
 from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
-
-"""
-    Podriamos incluir:
-    - custom transformation que capture info chula de la imagen
-    - rgb -> un solo channel con info interesante (ver papels y tal)
-    - a las malas, captura de features con PCA, DCT o algo y cambiamos a un modelo MLP
-    - optical flow, aplicar al dataset (opencv)
-    - otra es entrenar un modelo de AE y utilizar el latent space como input a un MLP, random forest, ... etc
-    - quitar data-augmentation para no liarla?
-    - split train dataset para validation?
-    - TODO: probar modelo que este aprendiendo con otro dataset!!!!!
-    - AWS: cuando sepa lo anterior meterlo chicha con AWS al entreno
-    - añadir dropout
-    - TODO: sacar features manualemente y entrenar MLP
-    - momentum!
-    - TODO: monitorizar train accuracy!
-    - attention mechanisms: https://github.com/leaderj1001/Attention-Augmented-Conv2d
-"""
+import os
 
 def train(dataloader, model, loss_fn, optimizer):
     threshold = 0.5
@@ -87,7 +65,7 @@ if __name__ == '__main__':
     # train data loader
     # transfomations to data
     t_train = transforms.Compose([
-            transforms.RandomRotation(180),
+            #transforms.RandomRotation(180),
             transforms.ToTensor(),
             #transforms.Resize(resize) #,interpolation='bilinear'),
             ])
@@ -111,20 +89,12 @@ if __name__ == '__main__':
     # model
     model = NeuralNetworkAdaptative()
     
-    #print(model)
-    #model.load_state_dict(torch.load("weights/model_e20.pth"))
-    
-    #pytorch_total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
-    #print("Numero de parametros: " ,pytorch_total_params)
-    
     # model loss
-    # cross-entropy, ya que vamos a predecir probabilidades
-    # de clasificar en fake o no fake
     loss_fn = nn.BCELoss()
 
     # optimizer
     #optimizer = torch.optim.SGD(model.parameters(), lr=1e-3, momentum=0.8)
-    optimizer = torch.optim.Adam(model.parameters(),lr=1e-3)
+    optimizer = torch.optim.Adam(model.parameters(),lr=1e-4)
     
     for e in range(epochs):
         print(f"Epoch {e+1}\n-------------------------------")
